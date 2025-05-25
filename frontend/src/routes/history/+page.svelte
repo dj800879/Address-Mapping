@@ -44,7 +44,7 @@
 </script>
 
 <h1>Distance Calculator</h1>
-<p>Prototype web application for calculating the distance between addresses.</p>
+
 
 <div class="history-card">
   <div class="header-row">
