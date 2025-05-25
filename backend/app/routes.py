@@ -6,6 +6,17 @@ from app.utils import geocode_address, calculate_distance
 from app.models import QueryHistory
 from app.limiter import limiter  # Moved here to avoid circular import
 import re
+from fastapi import HTTPException
+
+@router.delete("/history/{query_id}")
+def delete_query(query_id: int, db: Session = Depends(get_db)):
+    query = db.query(QueryHistory).filter(QueryHistory.id == query_id).first()
+    if not query:
+        raise HTTPException(status_code=404, detail="Query not found")
+
+    db.delete(query)
+    db.commit()
+    return {"message": "Query deleted successfully"}
 
 router = APIRouter()
 
@@ -67,3 +78,13 @@ def get_history(db: Session = Depends(get_db)):
         }
         for q in queries
     ]
+
+@router.delete("/history/{query_id}")
+def delete_query(query_id: int, db: Session = Depends(get_db)):
+    query = db.query(QueryHistory).filter(QueryHistory.id == query_id).first()
+    if not query:
+        raise HTTPException(status_code=404, detail="Query not found")
+
+    db.delete(query)
+    db.commit()
+    return {"message": "Query deleted successfully"}

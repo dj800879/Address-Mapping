@@ -1,19 +1,46 @@
-<script>
-  let history = [];
-  let error = '';
+<script lang="ts">
+  import { onMount } from 'svelte';
+
+  type Query = {
+    id: number;
+    source: string;
+    destination: string;
+    kilometers: number;
+    miles: number;
+  };
+
+  let history: Query[] = [];
+  let error: string = '';
 
   // Fetch history when page loads
   onMount(async () => {
+    await fetchHistory();
+  });
+
+  async function fetchHistory() {
     try {
       const res = await fetch('https://address-mapping.onrender.com/history');
       if (!res.ok) throw new Error('Failed to fetch history');
       history = await res.json();
     } catch (err) {
-      error = err.message;
+      error = (err as Error).message;
     }
-  });
+  }
 
-  import { onMount } from 'svelte';
+  async function deleteRow(id: number) {
+    try {
+      const res = await fetch(`https://address-mapping.onrender.com/history/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!res.ok) throw new Error('Failed to delete query');
+
+      // Filter out the deleted row
+      history = history.filter(item => item.id !== id);
+    } catch (err) {
+      error = (err as Error).message;
+    }
+  }
 </script>
 
 <h1>Distance Calculator</h1>
@@ -35,8 +62,9 @@
         <tr>
           <th>Source Address</th>
           <th>Destination Address</th>
-          <th>Distance in Miles</th>
-          <th>Distance in Kilometers</th>
+          <th>Miles</th>
+          <th>Kilometers</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -46,6 +74,9 @@
             <td>{item.destination}</td>
             <td>{item.miles} mi</td>
             <td>{item.kilometers} km</td>
+            <td>
+              <button class="btn-delete" on:click={() => deleteRow(item.id)}>🗑 Delete</button>
+            </td>
           </tr>
         {/each}
       </tbody>
@@ -94,6 +125,19 @@
 
   .back-button:hover {
     background: #555;
+  }
+
+  .btn-delete {
+    background-color: #e53935;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .btn-delete:hover {
+    background-color: #c62828;
   }
 
   .error {

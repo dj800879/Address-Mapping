@@ -1,58 +1,53 @@
 <script>
-	import Header from './Header.svelte';
-	import '../app.css';
-
-	/** @type {{children: import('svelte').Snippet}} */
-	let { children } = $props();
+  // Add if you need layout-level logic
 </script>
 
-<div class="app">
-	<Header />
+<svelte:head>
+  <!-- ✅ Google Fonts for headings and body text -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Montserrat:wght@600&display=swap"
+  />
+  <title>Distance Calculator</title>
+</svelte:head>
 
-	<main>
-		{@render children()}
-	</main>
-
-	<footer>
-		<p>
-			visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to learn about SvelteKit
-		</p>
-	</footer>
+<!-- ✅ Page wrapper to center content -->
+<div class="app-container">
+  <slot />
 </div>
 
+<style global>
+  /* ✅ Global font and background */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+  }
+
+  h1, h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    font-family: 'Open Sans', sans-serif;
+  }
+</style>
+
 <style>
-	.app {
-		display: flex;
-		flex-direction: column;
-		min-height: 100vh;
-	}
-
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
-	}
+  /* ✅ Optional content container (centered layout) */
+  .app-container {
+    min-height: 100vh;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
 </style>
