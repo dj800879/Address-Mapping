@@ -5,7 +5,7 @@
   // Fetch history when page loads
   onMount(async () => {
     try {
-      const res = await fetch('http://localhost:8000/history');
+      const res = await fetch('https://address-mapping.onrender.com/history');
       if (!res.ok) throw new Error('Failed to fetch history');
       history = await res.json();
     } catch (err) {
