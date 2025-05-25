@@ -1,12 +1,12 @@
-<script>
-  let source = '';
-  let destination = '';
-  let unit = 'kilometers'; // miles, kilometers, both
-  let distanceKm = null;
-  let distanceMi = null;
-  let error = '';
+<script lang="ts">
+  let source: string = '';
+  let destination: string = '';
+  let unit: 'miles' | 'kilometers' | 'both' = 'kilometers';
+  let distanceKm: number | null = null;
+  let distanceMi: number | null = null;
+  let error: string = '';
 
-  async function calculateDistance() {
+  async function calculateDistance(): Promise<void> {
     error = '';
     distanceKm = null;
     distanceMi = null;
@@ -24,7 +24,7 @@
       distanceKm = data.kilometers;
       distanceMi = data.miles;
     } catch (err) {
-      error = '❌ ' + (err.message || 'Something went wrong');
+      error = '❌ ' + ((err as Error).message || 'Something went wrong');
     }
   }
 </script>
@@ -67,7 +67,9 @@
     <div class="error">{error}</div>
   {/if}
 
-  <a href="/history" class="history-link">View Historical Queries 🔄</a>
+  <div class="history-link-container">
+    <a href="/history" class="history-link">View Historical Queries 🔄</a>
+  </div>
 </div>
 
 <style>
@@ -82,7 +84,7 @@
     padding: 2rem;
     background: #f3f3f3;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 
   .form {
@@ -134,17 +136,18 @@
     text-align: center;
   }
 
-  .history-link {
-    display: inline-block;
-    margin-top: 2rem;
+  .history-link-container {
     text-align: center;
+    margin-top: 2rem;
+  }
+
+  .history-link {
     text-decoration: none;
     background: #333;
     color: white;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.5rem;
     border-radius: 5px;
-    width: 100%;
-    text-align: center;
+    display: inline-block;
   }
 
   .history-link:hover {
