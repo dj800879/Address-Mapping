@@ -4,23 +4,13 @@ from pydantic import BaseModel, Field
 from app.database import SessionLocal
 from app.utils import geocode_address, calculate_distance
 from app.models import QueryHistory
-from app.limiter import limiter  # Moved here to avoid circular import
+from app.limiter import limiter
 import re
-from fastapi import HTTPException
 
-@router.delete("/history/{query_id}")
-def delete_query(query_id: int, db: Session = Depends(get_db)):
-    query = db.query(QueryHistory).filter(QueryHistory.id == query_id).first()
-    if not query:
-        raise HTTPException(status_code=404, detail="Query not found")
-
-    db.delete(query)
-    db.commit()
-    return {"message": "Query deleted successfully"}
-
+# ✅ Moved to the top to avoid NameError
 router = APIRouter()
 
-# Database session dependency
+# ✅ Database session dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -28,17 +18,17 @@ def get_db():
     finally:
         db.close()
 
-# Input validation schema
+# ✅ Input validation schema
 class DistanceRequest(BaseModel):
     source: str = Field(..., min_length=2, max_length=255)
     destination: str = Field(..., min_length=2, max_length=255)
 
-# Basic sanitization
+# ✅ Basic sanitization
 def sanitize_input(value: str) -> str:
     value = re.sub(r"[;'\"]", "", value)
     return value.strip()
 
-# POST /distance endpoint with rate limiting
+# ✅ POST /distance endpoint with rate limiting
 @router.post("/distance")
 @limiter.limit("5/minute")
 def get_distance(request: Request, data: DistanceRequest, db: Session = Depends(get_db)):
@@ -65,12 +55,13 @@ def get_distance(request: Request, data: DistanceRequest, db: Session = Depends(
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# GET /history endpoint
+# ✅ GET /history endpoint
 @router.get("/history")
 def get_history(db: Session = Depends(get_db)):
     queries = db.query(QueryHistory).order_by(QueryHistory.id.desc()).all()
     return [
         {
+            "id": q.id,  # ✅ Include ID so frontend delete works
             "source": q.source,
             "destination": q.destination,
             "kilometers": q.kilometers,
@@ -79,6 +70,7 @@ def get_history(db: Session = Depends(get_db)):
         for q in queries
     ]
 
+# ✅ DELETE /history/{query_id} endpoint
 @router.delete("/history/{query_id}")
 def delete_query(query_id: int, db: Session = Depends(get_db)):
     query = db.query(QueryHistory).filter(QueryHistory.id == query_id).first()
