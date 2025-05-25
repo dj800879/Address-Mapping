@@ -4,7 +4,7 @@ A web-based prototype application that calculates the distance between two addre
 
 ---
 
-##  Live URLs
+## 🌐 Live URLs
 
 * **Frontend (Vercel)**: [https://address-mapping.vercel.app](https://address-mapping.vercel.app)
 * **Backend API (Render)**: [https://address-mapping.onrender.com/docs](https://address-mapping.onrender.com/docs)
@@ -40,12 +40,7 @@ A web-based prototype application that calculates the distance between two addre
    ```bash
    pip install -r requirements.txt
    ```
-4. Create `.env` file with:
-
-   ```env
-   DATABASE_URL=sqlite:///./queries.db  # Or use PostgreSQL URL if needed
-   ```
-5. Run the backend:
+4. Run the backend:
 
    ```bash
    uvicorn app.main:app --reload
@@ -95,43 +90,69 @@ Use these sample addresses to test the calculator:
 * Units: Miles, Kilometers, or Both
 * The result should be returned and stored in history.
 
-🔐 Test Data + Expected Output
-✅ Valid Request
-Input:
+---
+
+## 🔐 Test Data + Expected Output
+
+### ✅ Valid Request
+
+```json
 {
   "source": "Chicago, IL",
   "destination": "Bloomington, IL"
 }
-Expected Output:
+```
+
+**Expected Output:**
+
+```json
 {
   "kilometers": 211.76,
   "miles": 131.56
 }
-❌ Invalid Input (empty)
+```
+
+### ❌ Invalid Input (Empty Fields)
+
+```json
 {
   "source": "",
   "destination": ""
 }
-Expected Output:
-422 validation error
-❌ Injection Attempt
+```
+
+**Expected Output:** `422 Unprocessable Entity`
+
+### ❌ Injection Attempt
+
+```json
 {
   "source": "Chicago'; DROP TABLE users;--",
   "destination": "New York"
 }
-Expected:
-400 error, sanitized input, app continues running
-🔁 Retry Test
+```
+
+**Expected:** `400 Bad Request`, input sanitized, no crash
+
+### 🔁 Retry Test
+
+```json
 {
   "source": "ZZZZZZZZZ",
   "destination": "New York"
 }
-Expected:
-•	Logs retries
-•	400 error with message: "No geocoding result for address"
-🚫 Rate Limit Test
-Send >5 requests within a minute from same IP
-Expected: 429 Too Many Requests
+```
+
+**Expected:**
+
+* 400 error: "No geocoding result for address"
+* Retries logged
+
+### 🚫 Rate Limit Test
+
+> Send more than 5 requests within one minute from the same IP.
+
+**Expected:** `429 Too Many Requests`
 
 ---
 
@@ -156,7 +177,7 @@ project-root/
 
 ---
 
-## 🧠 AI-Powered Address Correction (Future Scope)
+## AI-Powered Address Correction (Future Scope)
 
 We plan to add:
 
@@ -164,7 +185,3 @@ We plan to add:
 * Optional ML-based correction with confidence scoring
 
 ---
-
-For any setup help, please refer to the API documentation at `/docs` or contact the developer.
-
-Enjoy calculating distances! 🚀
