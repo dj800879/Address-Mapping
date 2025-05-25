@@ -40,10 +40,8 @@
   button {
     font-family: 'Open Sans', sans-serif;
   }
-</style>
 
-<style>
-  /* ✅ Optional content container (centered layout) */
+  /* ✅ Layout-specific: center and constrain content */
   .app-container {
     min-height: 100vh;
     max-width: 960px;
