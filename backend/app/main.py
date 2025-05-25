@@ -6,24 +6,26 @@ from app.routes import router
 from app.database import Base, engine
 from app.limiter import limiter
 
-# FastAPI app instance
 app = FastAPI(title="Delivery Distance API")
 
-# Rate limiting middleware
+# 🔐 Rate limiting middleware
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 
-# Enable CORS for frontend (adjust origin as needed)
+# 🔐 CORS Middleware — allow your deployed frontend to access the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "https://address-mapping.vercel.app",  # 🔁 Replace with your actual Vercel frontend URL
+        "http://localhost:5173"  # still allow local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Create tables in the database
+# 📦 Create tables
 Base.metadata.create_all(bind=engine)
 
-# Include API routes
+# 🔁 Include routes
 app.include_router(router)
