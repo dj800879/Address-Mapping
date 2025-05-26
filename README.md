@@ -4,16 +4,16 @@ A web-based prototype application that calculates the distance between two addre
 
 ---
 
-## 🌐 Live URLs
+##  Live URLs
 
 * **Frontend (Vercel)**: [https://address-mapping.vercel.app](https://address-mapping.vercel.app)
 * **Backend API (Render)**: [https://address-mapping.onrender.com/docs](https://address-mapping.onrender.com/docs)
 * **PostgreSQL Database (Render Dashboard)**: [https://dashboard.render.com/d/dpg-d0paroemcj7s73duehig-a/info](https://dashboard.render.com/d/dpg-d0paroemcj7s73duehig-a/info)
-* **GitHub Repository**: [https://github.com/dj800879/Address-Mapping/tree/main](https://github.com/dj800879/Address-Mapping/tree/main)
+
 
 ---
 
-## 📦 Technologies Used
+##  Technologies Used
 
 | Layer    | Tech            | Description                            |
 | -------- | --------------- | -------------------------------------- |
@@ -24,9 +24,9 @@ A web-based prototype application that calculates the distance between two addre
 
 ---
 
-## 💻 How to Run Locally
+##  How to Run Locally
 
-### ✅ Backend Setup (FastAPI)
+###  Backend Setup (FastAPI)
 
 1. Clone the repo and navigate to `backend/`
 2. Create a virtual environment:
@@ -48,7 +48,7 @@ A web-based prototype application that calculates the distance between two addre
 
    * Access Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### ✅ Frontend Setup (SvelteKit)
+###  Frontend Setup (SvelteKit)
 
 1. Navigate to `frontend/`
 2. Install dependencies:
@@ -66,13 +66,11 @@ A web-based prototype application that calculates the distance between two addre
 
 ---
 
-## 🔐 Environment Variables
+##  Environment Variables
 
 In your backend root (`backend/`), create a `.env` file:
 
-```env
-DATABASE_URL=your_postgres_or_sqlite_connection_string
-```
+
 
 Render will also require this in the **Environment Settings**.
 
@@ -82,17 +80,18 @@ Render will also require this in the **Environment Settings**.
 
 Use these sample addresses to test the calculator:
 
-| Source Address                               | Destination Address                      |
-| -------------------------------------------- | ---------------------------------------- |
-| 415 Mission St Suite 4800, San Francisco, CA | 3223 Hanover St Suite 110, Palo Alto, CA |
-| 1600 Amphitheatre Pkwy, Mountain View, CA    | 1 Infinite Loop, Cupertino, CA           |
+| Source Address    | Destination Address  |
+| ----------------- | -------------------- |
+| San Francisco, CA |  Palo Alto, CA       |
+| Delhi, India      |  Hyderabad, India    |
+| Chicago, IL       |  Bloomington, IL     |
 
 * Units: Miles, Kilometers, or Both
 * The result should be returned and stored in history.
 
 ---
 
-## 🔐 Test Data + Expected Output
+##  Test Data + Expected Output
 
 ### ✅ Valid Request
 
@@ -156,18 +155,18 @@ Use these sample addresses to test the calculator:
 
 ---
 
-## 🗃 Features
+##  Features
 
-* ✅ Distance calculation using coordinates
-* ✅ Unit selection: km, miles, or both
-* ✅ Stores queries to a database
-* ✅ View/delete historical entries (🗑️ Delete feature added)
-* ✅ Deployed on cloud (Vercel + Render)
-* ✅ Rate-limited API with input sanitization
+*  Distance calculation using coordinates
+*  Unit selection: km, miles, or both
+*  Stores queries to a database
+*  View/delete historical entries (🗑️ Delete feature added)
+*  Deployed on cloud (Vercel + Render)
+*  Rate-limited API with input sanitization
 
 ---
 
-## 📌 Folder Structure
+ Folder Structure
 
 ```
 project-root/
