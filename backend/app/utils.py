@@ -1,56 +1,56 @@
+import os
 import requests
-from math import radians, cos, sin, sqrt, atan2
-import logging
-import time
+import math
+from dotenv import load_dotenv
 
-# Setup logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Load environment variables from .env file (useful for local dev)
+load_dotenv()
 
-# Geocode address using OpenStreetMap's Nominatim API with retry + logging
-def geocode_address(address):
-    url = "https://nominatim.openstreetmap.org/search"
+GOOGLE_API_KEY = os.getenv("GOOGLE_GEOCODING_API_KEY")
+
+
+def geocode_address(address: str) -> tuple[float, float]:
+    """
+    Geocode an address using the Google Maps Geocoding API.
+    Returns (latitude, longitude) tuple.
+    """
+    endpoint = "https://maps.googleapis.com/maps/api/geocode/json"
     params = {
-        "q": address,
-        "format": "json",
-        "limit": 1
-    }
-    headers = {
-        "User-Agent": "delivery-distance-app"
+        "address": address,
+        "key": GOOGLE_API_KEY
     }
 
-    retries = 3
-    for attempt in range(retries):
-        try:
-            response = requests.get(url, params=params, headers=headers, timeout=5)
-            response.raise_for_status()
-            data = response.json()
+    try:
+        response = requests.get(endpoint, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
 
-            if not data:
-                raise ValueError(f"No geocoding result for address: {address}")
+        if data["status"] != "OK":
+            raise ValueError(f"Geocoding failed: {data.get('error_message', data['status'])}")
 
-            lat = float(data[0]["lat"])
-            lon = float(data[0]["lon"])
-            return lat, lon
+        location = data["results"][0]["geometry"]["location"]
+        return location["lat"], location["lng"]
 
-        except Exception as e:
-            logger.warning(f"Attempt {attempt + 1} - Failed to geocode '{address}': {e}")
-            if attempt < retries - 1:
-                time.sleep(1)  # backoff before retry
-            else:
-                raise
+    except Exception as e:
+        raise ValueError(f"Error during geocoding '{address}': {str(e)}")
 
-# Calculate distance between two coordinates using Haversine formula
-def calculate_distance(lat1, lon1, lat2, lon2):
-    R_km = 6371  # Earth radius in kilometers
 
-    d_lat = radians(lat2 - lat1)
-    d_lon = radians(lon2 - lon1)
+def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> tuple[float, float]:
+    """
+    Calculate distance between two lat/lon points using the Haversine formula.
+    Returns distance in kilometers and miles.
+    """
+    R = 6371  # Earth radius in kilometers
 
-    a = sin(d_lat / 2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(d_lon / 2)**2
-    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
 
-    distance_km = R_km * c
-    distance_mi = distance_km * 0.621371
+    a = math.sin(dlat / 2)**2 + math.cos(math.radians(lat1)) \
+        * math.cos(math.radians(lat2)) * math.sin(dlon / 2)**2
 
-    return round(distance_km, 2), round(distance_mi, 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance_km = R * c
+    distance_miles = distance_km * 0.621371
+
+    return round(distance_km, 2), round(distance_miles, 2)
